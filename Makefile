@@ -39,9 +39,6 @@ else
 SMCalloutView:
 endif
 
-KIF:
-	git submodule update --init test/ios/KIF
-
 
 #### Build files ###############################################################
 
@@ -140,7 +137,8 @@ ipackage: Xcode/ios
 ipackage-sim: Xcode/ios
 	JOBS=$(JOBS) ./scripts/ios/package.sh sim
 
-itest: ipackage-sim KIF
+itest: ipackage-sim
+	cd test/ios && pod install
 	./scripts/ios/test.sh
 
 # Legacy name
