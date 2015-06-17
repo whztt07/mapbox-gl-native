@@ -302,7 +302,7 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
 
         // Calculate the anchor points around which you want to place labels
         Anchors anchors = layout.placement == PlacementType::Line ?
-            getAnchors(line, symbolSpacing, textMaxAngle, shapedText.left, shapedText.right, glyphSize, textBoxScale, overscaling) :
+            getAnchors(line, symbolSpacing, textMaxAngle, shapedText.left, shapedText.right, shapedIcon.left, shapedIcon.right, glyphSize, textBoxScale, overscaling) :
             Anchors({ Anchor(float(line[0].x), float(line[0].y), 0, minScale) });
 
 
