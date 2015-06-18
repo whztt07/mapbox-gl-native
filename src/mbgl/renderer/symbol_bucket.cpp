@@ -292,8 +292,10 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
         layout.placement == PlacementType::Line;
     const bool mayOverlap = layout.text.allow_overlap || layout.icon.allow_overlap ||
         layout.text.ignore_placement || layout.icon.ignore_placement;
+    const bool isLine = layout.placement == PlacementType::Line;
+    const float textRepeatDistance = symbolSpacing / 2;
 
-    auto& clippedLines = layout.placement == PlacementType::Line ?
+    auto& clippedLines = isLine ?
         util::clipLines(lines, 0, 0, 4096, 4096) :
         lines;
 
@@ -301,7 +303,7 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
         if (!line.size()) continue;
 
         // Calculate the anchor points around which you want to place labels
-        Anchors anchors = layout.placement == PlacementType::Line ?
+        Anchors anchors = isLine ?
             getAnchors(line, symbolSpacing, textMaxAngle, shapedText.left, shapedText.right, shapedIcon.left, shapedIcon.right, glyphSize, textBoxScale, overscaling) :
             Anchors({ Anchor(float(line[0].x), float(line[0].y), 0, minScale) });
 
