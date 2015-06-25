@@ -294,6 +294,7 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
         layout.text.ignore_placement || layout.icon.ignore_placement;
     const bool isLine = layout.placement == PlacementType::Line;
     const float textRepeatDistance = symbolSpacing / 2;
+    struct compareText;
 
     auto& clippedLines = isLine ?
         util::clipLines(lines, 0, 0, 4096, 4096) :
@@ -334,6 +335,21 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
                     face);
         }
     }
+}
+    
+bool SymbolBucket::anchorIsTooClose(<#const std::string &text#>, <#const float &repeatDistance#>, Anchor &anchor) {
+    auto otherAnchors = compareText.find(text);
+    if (otherAnchors == compareText.end()) {
+        compareText.emplace(text, Anchors());
+    } else {
+        for (Anchor k : otherAnchors) {
+            if (anchor.dist(k) < repeatDistance) {
+                return true;
+            }
+        }
+    }
+    otherAnchors.push_back(anchor);
+    return false;
 }
 
 void SymbolBucket::placeFeatures() {
