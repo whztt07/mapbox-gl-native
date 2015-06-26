@@ -95,8 +95,8 @@ private:
     void addFeature(const std::vector<std::vector<Coordinate>> &lines,
             const Shaping &shapedText, const PositionedIcon &shapedIcon,
             const GlyphPositions &face);
-    bool anchorIsTooClose(const std::string &text, const float &repeatDistance, Anchor &anchor);
-    std::map compareText;
+    bool anchorIsTooClose(const std::string &text, const float repeatDistance, Anchor &anchor);
+    std::map<std::string, std::vector<Anchor>> compareText;
     
     void addToDebugBuffers();
 

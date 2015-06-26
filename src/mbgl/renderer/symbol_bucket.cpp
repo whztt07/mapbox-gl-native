@@ -311,6 +311,12 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
 
         // For each potential label, create the placement features used to check for collisions, and the quads use for rendering.
         for (Anchor &anchor : anchors) {
+            
+            if (shapedText && isLine) {
+                if (anchorIsTooClose(shapedText.text, textRepeatDistance, anchor)) {
+                    continue;
+                }
+            }
 
             const bool inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
 
@@ -337,13 +343,14 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
     }
 }
     
-bool SymbolBucket::anchorIsTooClose(<#const std::string &text#>, <#const float &repeatDistance#>, Anchor &anchor) {
+bool SymbolBucket::anchorIsTooClose(<#const std::string &text#>, const float repeatDistance, Anchor &anchor) {
     auto otherAnchors = compareText.find(text);
+    cout << otherAnchors;
     if (otherAnchors == compareText.end()) {
         compareText.emplace(text, Anchors());
     } else {
-        for (Anchor k : otherAnchors) {
-            if (anchor.dist(k) < repeatDistance) {
+        for (Anchor otherAnchor : otherAnchors) {
+            if (util::dist(anchor, otherAnchor) < repeatDistance) {
                 return true;
             }
         }

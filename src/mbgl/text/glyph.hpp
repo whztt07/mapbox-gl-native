@@ -61,6 +61,7 @@ class Shaping {
     inline explicit Shaping(float x, float y)
         : top(y), bottom(y), left(x), right(x) {}
     std::vector<PositionedGlyph> positionedGlyphs;
+    std::string text;
     int32_t top;
     int32_t bottom;
     int32_t left;
