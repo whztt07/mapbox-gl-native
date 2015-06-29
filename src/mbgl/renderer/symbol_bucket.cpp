@@ -294,7 +294,6 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
         layout.text.ignore_placement || layout.icon.ignore_placement;
     const bool isLine = layout.placement == PlacementType::Line;
     const float textRepeatDistance = symbolSpacing / 2;
-    struct compareText;
 
     auto& clippedLines = isLine ?
         util::clipLines(lines, 0, 0, 4096, 4096) :
@@ -343,19 +342,21 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
     }
 }
     
-bool SymbolBucket::anchorIsTooClose(<#const std::string &text#>, const float repeatDistance, Anchor &anchor) {
+bool SymbolBucket::anchorIsTooClose(const std::string &text, const float repeatDistance, Anchor &anchor) {
     auto otherAnchors = compareText.find(text);
-    cout << otherAnchors;
-    if (otherAnchors == compareText.end()) {
-        compareText.emplace(text, Anchors());
-    } else {
-        for (Anchor otherAnchor : otherAnchors) {
-            if (util::dist(anchor, otherAnchor) < repeatDistance) {
+    std::cout << &otherAnchors;
+    std::cout << &repeatDistance;
+    std::cout << &anchor;
+    //if (otherAnchors == compareText.end()) {
+        //compareText.emplace(text, Anchors());
+    //} else {
+     //   for (Anchor otherAnchor : otherAnchors) {
+     //       if (util::dist(anchor, otherAnchor) < repeatDistance) {
                 return true;
-            }
-        }
-    }
-    otherAnchors.push_back(anchor);
+      //      }
+       // }
+    //}
+    //otherAnchors.push_back(anchor);
     return false;
 }
 
