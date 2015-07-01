@@ -294,6 +294,7 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
         layout.text.ignore_placement || layout.icon.ignore_placement;
     const bool isLine = layout.placement == PlacementType::Line;
     const float textRepeatDistance = symbolSpacing / 2;
+    //std::cout << textRepeatDistance << "\n";
 
     auto& clippedLines = isLine ?
         util::clipLines(lines, 0, 0, 4096, 4096) :
@@ -307,14 +308,21 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
             getAnchors(line, symbolSpacing, textMaxAngle, shapedText.left, shapedText.right, shapedIcon.left, shapedIcon.right, glyphSize, textBoxScale, overscaling) :
             Anchors({ Anchor(float(line[0].x), float(line[0].y), 0, minScale) });
 
-
+        if (isLine == true) {
+            if (anchors.size() > 0) {
+            std::cout << "anchors called in symbol_bucket " << anchors[0].x << "\n";
+            } else {
+                std::cout << "no anchors called in symbol_bucket\n";
+            }
+        }
+        
         // For each potential label, create the placement features used to check for collisions, and the quads use for rendering.
         for (Anchor &anchor : anchors) {
-            
             if (shapedText && isLine) {
-                if (anchorIsTooClose(shapedText.text, textRepeatDistance, anchor)) {
+                std::cout << anchorIsTooClose(shapedText.text, textRepeatDistance, anchor) << "\n";
+                //if (anchorIsTooClose(shapedText.text, textRepeatDistance, anchor)) {
                     continue;
-                }
+                //}
             }
 
             const bool inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
@@ -342,11 +350,19 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
     }
 }
     
-bool SymbolBucket::anchorIsTooClose(const std::string &text, const float repeatDistance, Anchor &anchor) {
+bool SymbolBucket::anchorIsTooClose(const std::string &text, const float /*repeatDistance*/, Anchor &/*anchor*/) {
     auto otherAnchors = compareText.find(text);
-    std::cout << &otherAnchors;
-    std::cout << &repeatDistance;
-    std::cout << &anchor;
+    if (otherAnchors != compareText.end()) {
+        std::cout << "found otherAnchors \n";
+        auto const &anchor_bar = otherAnchors->second;
+        for (auto const &a: anchor_bar) {
+            std::cout << a.x << "\n";
+        }
+        
+    }
+    //std::cout << &otherAnchors;
+    //std::cout << repeatDistance;
+    //std::cout << &anchor;
     //if (otherAnchors == compareText.end()) {
         //compareText.emplace(text, Anchors());
     //} else {

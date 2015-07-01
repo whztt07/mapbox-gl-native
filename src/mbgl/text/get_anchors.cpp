@@ -5,13 +5,15 @@
 
 #include <cmath>
 
+#include <iostream>
+
 namespace mbgl {
 
 Anchors resample(const std::vector<Coordinate> &line, const float offset, const float spacing,
         const float angleWindowSize, const float maxAngle, const float labelLength, const bool continuedLine, const bool placeAtMiddle) {
 
     float distance = 0;
-    float markedDistance = offset != 0.0f ? offset - spacing : 0;
+    float markedDistance = offset - spacing;
 
     Anchors anchors;
 
@@ -36,6 +38,7 @@ Anchors resample(const std::vector<Coordinate> &line, const float offset, const 
 
                 if (!angleWindowSize || checkMaxAngle(line, anchor, labelLength, angleWindowSize, maxAngle)) {
                     anchors.push_back(anchor);
+                    //std::cout << "anchor x: " << anchor.x << "\n";
                 }
             }
         }
@@ -52,6 +55,13 @@ Anchors resample(const std::vector<Coordinate> &line, const float offset, const 
         anchors = std::move(resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, continuedLine, true));
     }
 
+    /*
+    if (anchors.size() > 0) {
+    std::cout << "anchors?? " << anchors[0].x << "\n";
+    } else {
+        std::cout << "no anchors returned\n";
+    }*/
+    
     return anchors;
 }
 
@@ -72,12 +82,17 @@ Anchors getAnchors(const std::vector<Coordinate> &line, float spacing,
                                (textLeft - textRight) != 0.0f ? textRight - textLeft : 0,
                                        (iconLeft - iconRight) != 0.0f ? iconRight - iconLeft : 0);
     
+    //std::cout << "label length: " << labelLength << "\nfirst point:" << line[0].x << ", " << line[0].y << "\n";
+    
     // Is the line continued from outside the tile boundary?
     const bool continuedLine = (line[0].x == 0 || line[0].x == 4096 || line[0].y == 0 || line[0].y == 4096);
+    
+    //std::cout << "continued line?: " << continuedLine << "\n";
     
     // Is the label long, relative to the spacing?
     // If so, adjust the spacing so there is always a minimum space of `spacing / 4` between label edges.
     if (spacing - labelLength * boxScale  < spacing / 4) {
+        //std::cout << "Label is long \n";
         spacing = labelLength * boxScale + spacing / 4;
     }
     
@@ -88,10 +103,11 @@ Anchors getAnchors(const std::vector<Coordinate> &line, float spacing,
     // For non-continued lines, add a bit of fixed extra offset to avoid collisions at T intersections.
     const float fixedExtraOffset = glyphSize * 2;
     
-    
     const float offset = !continuedLine ?
     std::fmod((labelLength / 2 + fixedExtraOffset) * boxScale * overscaling, spacing) :
     std::fmod(spacing / 2 * overscaling, spacing);
+    
+    //std::cout << "offset: " << offset << "\n";
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, continuedLine, false);
 }
