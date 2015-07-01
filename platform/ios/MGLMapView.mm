@@ -1414,6 +1414,7 @@ std::chrono::steady_clock::duration secondsAsDuration(float duration)
 - (void)toggleDebug
 {
     _mbglMap->toggleDebug();
+    _mbglMap->toggleCollisionDebug();
 }
 
 - (void)emptyMemoryCache
