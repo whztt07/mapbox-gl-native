@@ -319,10 +319,10 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
         // For each potential label, create the placement features used to check for collisions, and the quads use for rendering.
         for (Anchor &anchor : anchors) {
             if (shapedText && isLine) {
-                std::cout << anchorIsTooClose(shapedText.text, textRepeatDistance, anchor) << "\n";
-                //if (anchorIsTooClose(shapedText.text, textRepeatDistance, anchor)) {
+                std::cout << "Anchor too close?" << anchorIsTooClose(shapedText.text, textRepeatDistance, anchor) << "\n";
+                /*if (anchorIsTooClose(shapedText.text, textRepeatDistance, anchor)) {
                     continue;
-                //}
+                }*/
             }
 
             const bool inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
@@ -350,29 +350,28 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
     }
 }
     
-bool SymbolBucket::anchorIsTooClose(const std::string &text, const float /*repeatDistance*/, Anchor &/*anchor*/) {
-    auto otherAnchors = compareText.find(text);
-    if (otherAnchors != compareText.end()) {
+bool SymbolBucket::anchorIsTooClose(const std::string &text, const float repeatDistance, Anchor &anchor) {
+    auto otherAnchors = compareText.find(text)->second;
+    /*if (otherAnchors != compareText.end()) {
         std::cout << "found otherAnchors \n";
         auto const &anchor_bar = otherAnchors->second;
         for (auto const &a: anchor_bar) {
             std::cout << a.x << "\n";
         }
-        
-    }
+    }*/
     //std::cout << &otherAnchors;
     //std::cout << repeatDistance;
     //std::cout << &anchor;
-    //if (otherAnchors == compareText.end()) {
-        //compareText.emplace(text, Anchors());
-    //} else {
-     //   for (Anchor otherAnchor : otherAnchors) {
-     //       if (util::dist(anchor, otherAnchor) < repeatDistance) {
+    if (compareText.find(text) == compareText.end()) {
+        compareText.emplace(text, Anchors());
+    } else {
+        for (Anchor otherAnchor : otherAnchors) {
+            if (util::dist<float>(anchor, otherAnchor) < repeatDistance) {
                 return true;
-      //      }
-       // }
-    //}
-    //otherAnchors.push_back(anchor);
+            }
+        }
+    }
+    otherAnchors.push_back(anchor);
     return false;
 }
 
