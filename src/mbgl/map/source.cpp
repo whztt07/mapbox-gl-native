@@ -298,11 +298,10 @@ TileData::State Source::addTile(MapData& data,
                 std::make_shared<VectorTileData>(normalized_id, style.layers, style.workers, glyphAtlas,
                                                  glyphStore, spriteAtlas, sprite, info,
                                                  transformState.getAngle(), data.getCollisionDebug());
-            new_tile.data->request(style.workers, transformState.getPixelRatio(), callback);
+            new_tile.data->request(style.workers, data.pixelRatio, callback);
         } else if (info.type == SourceType::Raster) {
             new_tile.data = std::make_shared<RasterTileData>(normalized_id, texturePool, info);
-            new_tile.data->request(
-                style.workers, transformState.getPixelRatio(), callback);
+            new_tile.data->request(style.workers, data.pixelRatio, callback);
         } else if (info.type == SourceType::Annotations) {
             new_tile.data = std::make_shared<LiveTileData>(normalized_id, data.annotationManager,
                                                            style.layers, style.workers, glyphAtlas,

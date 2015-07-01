@@ -19,7 +19,8 @@ class MapData {
     using Lock = std::lock_guard<std::mutex>;
 
 public:
-    inline MapData(MapMode mode_) : mode(mode_) {
+    inline MapData(MapMode mode_, const float pixelRatio_) : mode(mode_), pixelRatio(pixelRatio_) {
+        assert(pixelRatio > 0);
         setAnimationTime(TimePoint::min());
         setDefaultTransitionDuration(Duration::zero());
     }
@@ -76,11 +77,12 @@ public:
     }
     inline void setDefaultTransitionDuration(Duration duration) {
         defaultTransitionDuration = duration;
-    };
+    }
 
 public:
     AnnotationManager annotationManager;
     const MapMode mode;
+    const float pixelRatio;
 
 private:
     mutable std::mutex mtx;
