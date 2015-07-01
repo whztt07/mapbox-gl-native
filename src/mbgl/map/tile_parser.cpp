@@ -234,7 +234,7 @@ std::unique_ptr<Bucket> TileParser::createSymbolBucket(const GeometryTileLayer& 
     }
 
     bucket->addFeatures(
-        reinterpret_cast<uintptr_t>(&tile), spriteAtlas, *sprite, glyphAtlas, glyphStore);
+        reinterpret_cast<uintptr_t>(&tile), spriteAtlas, glyphAtlas, glyphStore);
 
     return bucket->hasData() ? std::move(bucket) : nullptr;
 }

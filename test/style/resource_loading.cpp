@@ -33,7 +33,7 @@ public:
         transform_.setLatLngZoom({0, 0}, 16);
 
         const std::string style = util::read_file("test/fixtures/resources/style.json");
-        style_ = std::make_unique<Style>(style, "", loop),
+        style_ = std::make_unique<Style>(style, "", data_, loop),
         style_->setObserver(this);
     }
 
@@ -47,7 +47,7 @@ public:
         data_.setAnimationTime(now);
         transform_.updateTransitions(now);
 
-        style_->update(data_, transform_.getState(), texturePool_);
+        style_->update(transform_.getState(), texturePool_);
     }
 
     // Style::Observer implementation.
