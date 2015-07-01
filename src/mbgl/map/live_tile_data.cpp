@@ -33,7 +33,7 @@ LiveTileData::~LiveTileData() {
 }
 
 void LiveTileData::parse() {
-    if (getState() != State::loaded) {
+    if (getState() != State::loaded && getState() != State::partial) {
         return;
     }
 
@@ -46,14 +46,18 @@ void LiveTileData::parse() {
             // is going to be discarded afterwards.
             TileParser parser(*tile, *this, layers, glyphAtlas, glyphStore, spriteAtlas, sprite);
             parser.parse();
+            if (parser.isPartialParse()) {
+                setState(State::partial);
+            } else {
+                setState(State::parsed);
+            }
         } catch (const std::exception& ex) {
             Log::Error(Event::ParseTile, "Live-parsing [%d/%d/%d] failed: %s", id.z, id.x, id.y, ex.what());
             setState(State::obsolete);
             return;
         }
-    }
 
-    if (getState() != State::obsolete) {
+    } else {
         setState(State::parsed);
     }
 }
