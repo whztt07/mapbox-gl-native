@@ -351,13 +351,12 @@ void SymbolBucket::addFeature(const std::vector<std::vector<Coordinate>> &lines,
 }
     
 bool SymbolBucket::anchorIsTooClose(const std::string &text, const float repeatDistance, Anchor &anchor) {
-    auto otherAnchors = compareText.find(text)->second;
-    /*if (otherAnchors != compareText.end()) {
-        std::cout << "found otherAnchors \n";
-        auto const &anchor_bar = otherAnchors->second;
-        for (auto const &a: anchor_bar) {
-            std::cout << a.x << "\n";
-        }
+        /*if (otherAnchors != compareText.end()) {
+            std::cout << "found otherAnchors \n";
+            auto const &anchor_bar = otherAnchors->second;
+            for (auto const &a: anchor_bar) {
+                    std::cout << a.x << "\n";
+            }
     }*/
     //std::cout << &otherAnchors;
     //std::cout << repeatDistance;
@@ -365,13 +364,16 @@ bool SymbolBucket::anchorIsTooClose(const std::string &text, const float repeatD
     if (compareText.find(text) == compareText.end()) {
         compareText.emplace(text, Anchors());
     } else {
-        for (Anchor otherAnchor : otherAnchors) {
+        auto otherAnchors = compareText.find(text)->second;
+        for (Anchor &otherAnchor : otherAnchors) {
+            std::cout << "otherAnchor: " << otherAnchor.x << "\nrepeatDistance: " << repeatDistance;
             if (util::dist<float>(anchor, otherAnchor) < repeatDistance) {
+                //std::cout << util::dist<float>(anchor, otherAnchor) << "\n";
                 return true;
             }
         }
     }
-    otherAnchors.push_back(anchor);
+    compareText[text].push_back(anchor);
     return false;
 }
 
